@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Hemliga tomten</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎄</text></svg>">
+<style>
+  @font-face {
+    font-family: "VT323";
+    src: url("fonts/vt323.woff2") format("woff2");
+    font-display: swap;
+  }
+
+  :root {
+    --bg: #0a0e1c;
+    --ink: #ece6d6;
+    --dim: #7d84a3;
+    --red: #e5484d;
+    --green: #4fb06a;
+    --gold: #f5c451;
+    --blue: #79b8ff;
+    --wood: #b07a45;
+    --brick: #c0573f;
+    --snow: #f4f7ff;
+    --glow: #ffc861;
+    --smoke: #6f7590;
+  }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+
+  html, body { margin: 0; min-height: 100%; }
+
+  body {
+    background: var(--bg) radial-gradient(ellipse 120% 70% at 50% 110%, #1d2b52 0%, #111832 45%, var(--bg) 75%) fixed;
+    color: var(--ink);
+    font-family: "VT323", ui-monospace, Menlo, Consolas, monospace;
+    font-size: 24px;
+    line-height: 1.25;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    overflow-x: hidden;
+  }
+
+  #snow {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  main {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 680px;
+    padding: 40px 16px 56px;
+    text-align: center;
+  }
+
+  .eyebrow { color: var(--dim); letter-spacing: .4em; margin: 0; }
+
+  h1 {
+    margin: .1em 0 0;
+    font-weight: normal;
+    font-size: clamp(40px, 12vw, 104px);
+    line-height: .9;
+    letter-spacing: .04em;
+    color: var(--red);
+    text-shadow: 0 0 18px rgba(229, 72, 77, .45), 4px 4px 0 #4a1316;
+  }
+
+  .year { color: var(--green); margin: .3em 0 0; letter-spacing: .15em; }
+
+  pre {
+    font-family: inherit;
+    margin: 0;
+    line-height: 1.05;
+    text-align: left;
+    display: inline-block;
+  }
+
+  .scene { font-size: clamp(9px, 3.5vw, 26px); margin: 28px auto 20px; }
+
+  /* scene colors */
+  .w { color: var(--wood); }
+  .k { color: var(--brick); }
+  .s { color: var(--snow); }
+  .sd { color: var(--dim); }
+  .t { color: var(--green); }
+  .r { color: var(--red); }
+  .y { color: var(--gold); }
+  .b { color: var(--blue); }
+  .st { color: #fff6d0; text-shadow: 0 0 8px var(--gold), 0 0 16px var(--gold); }
+  .g { color: var(--glow); text-shadow: 0 0 6px var(--glow), 0 0 14px rgba(255, 170, 60, .7); }
+  .g2 { color: #ffb347; text-shadow: 0 0 4px #ffb347; }
+  .m { color: var(--smoke); }
+  .x { color: var(--red); text-shadow: 0 0 6px rgba(229, 72, 77, .6); }
+
+  section p { margin: .4em 0; }
+
+  .names {
+    list-style: none;
+    padding: 0;
+    margin: .6em auto 1.2em;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: .1em 1.1em;
+    font-size: 30px;
+  }
+  .names li:nth-child(odd) { color: var(--gold); }
+  .names li:nth-child(even) { color: var(--green); }
+
+  .hint { color: var(--dim); text-wrap: balance; }
+
+  .hello { font-size: 34px; color: var(--gold); }
+
+  .gift { font-size: 26px; margin: 18px auto 8px; }
+  .gift.shake { animation: shake .6s ease-in-out; }
+  @keyframes shake {
+    0%, 100% { transform: rotate(0); }
+    20% { transform: rotate(-6deg); }
+    40% { transform: rotate(5deg); }
+    60% { transform: rotate(-4deg); }
+    80% { transform: rotate(3deg); }
+  }
+
+  button {
+    font: inherit;
+    font-size: 30px;
+    color: var(--ink);
+    background: none;
+    border: 0;
+    padding: .2em .4em;
+    cursor: pointer;
+  }
+  button:hover, button:focus-visible { color: var(--gold); text-shadow: 0 0 10px rgba(245, 196, 81, .6); outline: none; }
+  button:focus-visible { outline: 1px dashed var(--gold); outline-offset: 4px; }
+
+  .receiver {
+    font-size: clamp(52px, 14vw, 88px);
+    line-height: 1;
+    color: var(--gold);
+    text-shadow: 0 0 18px rgba(245, 196, 81, .5), 3px 3px 0 #5b4310;
+    min-height: 1em;
+    margin: .2em 0 .3em !important;
+  }
+  .cursor { animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .fade-in { animation: fade .8s ease-out both; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gift.shake, .cursor, .fade-in { animation: none; }
+  }
+</style>
+</head>
+<body>
+<canvas id="snow" aria-hidden="true"></canvas>
+
+<main>
+  <header>
+    <p class="eyebrow">* . * . *</p>
+    <h1>Hemliga tomten</h1>
+    <p class="year">* jul <span id="year"></span> *</p>
+  </header>
+
+  <pre class="scene" id="scene" role="img" aria-label="ASCII-konst av en snöig timmerstuga mellan två julgranar"></pre>
+
+  <section id="home" hidden>
+    <p>Årets tomtenissar:</p>
+    <ul class="names" id="names"></ul>
+    <p class="hint">Öppna den personliga länken du fick av tomten för att se vem du ska ge en julklapp till.</p>
+  </section>
+
+  <section id="mine" hidden>
+    <p class="hello">Ho ho ho, <span id="giver"></span>!</p>
+    <p class="hint">Tomten har lämnat något åt dig...</p>
+    <pre class="gift" id="gift" aria-hidden="true"><span class="r">     \  /</span>
+<span class="t">  ____</span><span class="r">\/</span><span class="t">____</span>
+<span class="t"> |    </span><span class="r">||</span><span class="t">    |</span>
+<span class="t"> |</span><span class="r">====[]====</span><span class="t">|</span>
+<span class="t"> |    </span><span class="r">||</span><span class="t">    |</span>
+<span class="t"> |____</span><span class="r">||</span><span class="t">____|</span></pre>
+    <div><button id="unwrap" type="button">[ öppna paketet ]</button></div>
+    <div id="result" hidden>
+      <p>Du är hemliga tomten åt</p>
+      <p class="receiver" aria-live="polite"><span id="receiver"></span><span class="cursor">_</span></p>
+      <p class="hint">( hyss... det är en hemlis )</p>
+    </div>
+  </section>
+
+  <section id="lost" hidden>
+    <p>Hmm, tomten känner inte igen den här länken.</p>
+    <p class="hint">Dubbelkolla länken du fick.</p>
+  </section>
+</main>
+
+<script type="module">
+import data from "./data.js";
+import { idFor, unseal } from "./cipher.js";
+
+const $ = (id) => document.getElementById(id);
+const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+$("year").textContent = new Date().getFullYear();
+
+/* ---------- views ---------- */
+
+function route() {
+  const token = decodeURIComponent(location.hash.slice(1));
+  const me = token && data.find((e) => e.id === idFor(token));
+  for (const id of ["home", "mine", "lost"]) $(id).hidden = true;
+
+  if (!token) {
+    $("names").innerHTML = data.map((e) => `<li>${e.giver}</li>`).join("");
+    $("home").hidden = false;
+  } else if (!me) {
+    $("lost").hidden = false;
+  } else {
+    $("giver").textContent = me.giver;
+    $("gift").hidden = false;
+    $("unwrap").parentElement.hidden = false;
+    $("result").hidden = true;
+    $("receiver").textContent = "";
+    $("unwrap").onclick = () => unwrap(unseal(token, me.gift));
+    $("mine").hidden = false;
+  }
+}
+
+function unwrap(name) {
+  const gift = $("gift");
+  $("unwrap").parentElement.hidden = true;
+  gift.classList.add("shake");
+  setTimeout(() => {
+    gift.classList.remove("shake");
+    gift.hidden = true;
+    $("result").hidden = false;
+    $("result").classList.add("fade-in");
+    $("result").scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "center" });
+    typeOut($("receiver"), name);
+  }, reducedMotion ? 0 : 650);
+}
+
+function typeOut(el, text) {
+  if (reducedMotion) { el.textContent = text; return; }
+  let i = 0;
+  const step = () => {
+    el.textContent = text.slice(0, ++i);
+    if (i < text.length) setTimeout(step, 180);
+  };
+  setTimeout(step, 500);
+}
+
+addEventListener("hashchange", route);
+route();
+
+/* ---------- ascii scene ---------- */
+
+const center = (s, n) => {
+  const left = Math.floor((n - s.length) / 2);
+  return " ".repeat(left) + s + " ".repeat(n - s.length - left);
+};
+
+const BIG_TREE = [
+  "     *     ",
+  "    /.\\    ",
+  "   /.o.\\   ",
+  "  /.*..o\\  ",
+  "   /o.*\\   ",
+  "  /.o..*\\  ",
+  " /*..o..o\\ ",
+  "/..o..*..o\\",
+  "    |_|    ",
+];
+
+const SMALL_TREE = [
+  "   *   ",
+  "  /.\\  ",
+  " /o.*\\ ",
+  " /.o.\\ ",
+  "/.*..o\\",
+  "  |_|  ",
+];
+
+const CABIN = [
+  " ".repeat(14) + "[___]",
+  " ".repeat(15) + "|=|",
+  "   " + "_".repeat(12) + "|=|___",
+  "  /" + center(". ' .  *  . ' .", 18) + "\\",
+  " /" + center("GOD JUL", 20) + "\\",
+  "/" + "_".repeat(22) + "\\",
+  " |  ____        ____  |",
+  " | |####|  __  |####| |",
+  " | |####| |  | |####| |",
+  " |        | o|        |",
+  " |________|__|________|",
+];
+
+const CHIMNEY = 16; // column of the chimney centre within the cabin
+const SMOKE_ROWS = 3;
+
+function smoke(t) {
+  const row = (x, ch) => " ".repeat(x) + ch;
+  return [
+    row(CHIMNEY + 2 + (t % 3), ["'", ".", "~"][t % 3]),
+    row(CHIMNEY + 1 + ((t + 1) % 2), (t + 1) % 2 ? "(" : ")"),
+    row(CHIMNEY + (t % 2), t % 2 ? "(" : ")"),
+  ];
+}
+
+const ORNAMENTS = ["r", "y", "b"];
+
+function treeClass(ch, r, c, t) {
+  if (ch === "*" && r === 0) return t % 2 ? "st" : "y";
+  if (ch === "o" || ch === "*") return ORNAMENTS[(r * 7 + c * 3 + (t >> 1)) % 3];
+  if (ch === "|" || ch === "_") return "w";
+  return "t";
+}
+
+function cabinClass(ch, r, c, t) {
+  if (r < SMOKE_ROWS) return "m";
+  r -= SMOKE_ROWS;
+  if (r <= 2 && c >= 14 && c <= 18) return "k";
+  if (r <= 5) {
+    if (/[A-Z]/.test(ch)) return "x";
+    if (r === 3 && ch !== "/" && ch !== "\\") return "sd";
+    return "s";
+  }
+  if (ch === "#") return (r * 5 + c + t) % 7 === 0 ? "g2" : "g";
+  if (ch === "o") return "y";
+  return "w";
+}
+
+function scene(t) {
+  const objects = [
+    { x: 0, rows: BIG_TREE, cls: treeClass },
+    { x: 14, rows: [...smoke(t), ...CABIN], cls: cabinClass },
+    { x: 41, rows: SMALL_TREE, cls: treeClass },
+  ];
+  const width = 48;
+  const height = Math.max(...objects.map((o) => o.rows.length));
+  const grid = Array.from({ length: height }, () => Array.from({ length: width }, () => [" ", ""]));
+
+  for (const o of objects) {
+    const top = height - o.rows.length;
+    o.rows.forEach((line, r) => {
+      [...line].forEach((ch, c) => {
+        if (ch !== " ") grid[top + r][o.x + c] = [ch, o.cls(ch, r, c, t)];
+      });
+    });
+  }
+
+  // a few twinkling stars in the empty sky
+  for (const [r, c] of [[0, 3], [1, 10], [0, 27], [2, 44], [4, 39], [3, 1], [1, 47]]) {
+    if (grid[r][c][0] === " ") grid[r][c] = [(r + c + t) % 4 ? "." : "+", (r + c + t) % 4 ? "sd" : "s"];
+  }
+
+  grid.push([...(".-'''-.,_,".repeat(5).slice(0, width))].map((ch) => [ch, "s"]));
+
+  const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  return grid.map((row) => {
+    let html = "", cur = null, buf = "";
+    const flush = () => {
+      if (buf) html += cur ? `<span class="${cur}">${esc(buf)}</span>` : esc(buf);
+      buf = "";
+    };
+    for (const [ch, cls] of row) {
+      if (cls !== cur && ch !== " ") { flush(); cur = cls; }
+      buf += ch;
+    }
+    flush();
+    return html.trimEnd();
+  }).join("\n");
+}
+
+let tick = 0;
+const drawScene = () => { $("scene").innerHTML = scene(tick++); };
+drawScene();
+if (!reducedMotion) setInterval(drawScene, 700);
+
+/* ---------- falling ascii snow ---------- */
+
+const canvas = $("snow");
+const ctx = canvas.getContext("2d");
+const CHARS = ["*", ".", "+", "*", ".", "'"];
+let flakes = [], W = 0, H = 0;
+
+const flake = (anywhere) => {
+  const z = Math.random();
+  return {
+    x: Math.random() * W,
+    y: anywhere ? Math.random() * H : -20,
+    z,
+    ch: CHARS[Math.floor(Math.random() * CHARS.length)],
+    size: 10 + z * 14,
+    speed: 18 + z * 46,
+    phase: Math.random() * Math.PI * 2,
+  };
+};
+
+function resize() {
+  const dpr = devicePixelRatio || 1;
+  W = innerWidth; H = innerHeight;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const count = Math.min(220, Math.round((W * H) / 7000));
+  flakes = Array.from({ length: count }, () => flake(true));
+}
+
+function paint() {
+  ctx.clearRect(0, 0, W, H);
+  for (const f of flakes) {
+    ctx.globalAlpha = 0.25 + f.z * 0.6;
+    ctx.font = `${f.size}px VT323, monospace`;
+    ctx.fillStyle = "#f4f7ff";
+    ctx.fillText(f.ch, f.x, f.y);
+  }
+}
+
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  for (const f of flakes) {
+    f.y += f.speed * dt;
+    f.phase += dt * (0.6 + f.z);
+    f.x += Math.sin(f.phase) * (8 + f.z * 12) * dt;
+    if (f.y > H + 20) Object.assign(f, flake(false));
+  }
+  paint();
+  requestAnimationFrame(frame);
+}
+
+addEventListener("resize", resize);
+resize();
+if (reducedMotion) paint(); else requestAnimationFrame(frame);
+</script>
+</body>
+</html>

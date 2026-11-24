@@ -1,0 +1,9 @@
+{
+  "name": "secret-santa",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "draw": "node draw.js",
+    "serve": "python3 -m http.server 8000 --directory public"
+  }
+}
