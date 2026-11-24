@@ -36,31 +36,65 @@ ES modules need a real HTTP server, so opening `index.html` directly from disk w
 
 ## Deploy
 
-`public/` is plain static files, so any static host works. The included `compose.yaml` runs
-it behind a Cloudflare Tunnel, so the server opens no ports: one container runs Caddy
-serving `public/`, the other runs `cloudflared` connecting it to Cloudflare.
+`public/` is plain static files, so any static host works. The included `compose.yaml`
+runs Caddy serving `public/`, meant to sit behind a Cloudflare Tunnel so the server opens
+no ports. Server-specific settings go in `compose.override.yaml`, which is git-ignored and
+picked up automatically by `docker compose`.
 
-### One-time setup
+### Using a tunnel you already run
 
-1. Cloudflare dashboard: Zero Trust → Networks → Tunnels → **Create a tunnel** → Cloudflared.
-   From the install step, copy the token (the long string after `--token`).
-2. In the tunnel, add a public hostname for your domain with service type `HTTP` and URL
-   `web:8080`. Cloudflare creates the DNS record.
+Clone the repo on the server, then add a `compose.override.yaml` depending on how
+`cloudflared` runs there.
+
+**`cloudflared` installed on the host** (e.g. a systemd service):
+
+```yaml
+services:
+  web:
+    ports:
+      - "127.0.0.1:8080:8080"   # localhost only, not exposed publicly
+```
+
+Route the hostname to `http://localhost:8080`.
+
+**`cloudflared` running in Docker:** join the network it uses
+(`docker inspect <container> --format '{{json .NetworkSettings.Networks}}'`):
+
+```yaml
+services:
+  web:
+    networks:
+      default:
+      tunnel:
+        aliases: [secret-santa]
+networks:
+  tunnel:
+    external: true
+    name: <cloudflared network>
+```
+
+Route the hostname to `http://secret-santa:8080`.
+
+Then start it with `docker compose up -d` and add the public hostname to the tunnel in the
+Cloudflare dashboard (Networks → Tunnels → your tunnel → Add route). Cloudflare creates the
+DNS record.
+
+### Using a dedicated tunnel
+
+1. Cloudflare dashboard: Networks → Tunnels → **Create a tunnel** → Cloudflared. From the
+   install step, copy the token (the long string after `--token`).
+2. Add a public hostname with service type `HTTP` and URL `web:8080`.
 3. On the server:
 
    ```sh
    git clone <this repo>
    cd secret-santa
    echo "TUNNEL_TOKEN=<token>" > .env
-   docker compose up -d
+   docker compose --profile tunnel up -d
    ```
 
-4. Check that the site shows the cabin and that the tunnel is **Healthy** in the dashboard.
-   Don't test with a real link, since that spoils a match.
-
-If the server already runs a tunnel for other sites, reuse it instead: remove the `tunnel`
-service, add `ports: ["127.0.0.1:8080:8080"]` to `web`, and point the hostname at
-`http://localhost:8080`. The port is bound to localhost only, so it isn't exposed publicly.
+Either way, check that the site shows the cabin. Don't test with a real link, since that
+spoils a match.
 
 ### After a new draw
 
