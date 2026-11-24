@@ -79,6 +79,22 @@ Then start it with `docker compose up -d` and add the public hostname to the tun
 Cloudflare dashboard (Networks → Tunnels → your tunnel → Add route). Cloudflare creates the
 DNS record.
 
+### Using Podman instead of Docker
+
+`deploy/secret-santa.container` is a Podman Quadlet unit that runs the same Caddy container
+as a systemd service, published on `127.0.0.1:8080`. With the repo cloned to
+`~/secret-santa`:
+
+```sh
+mkdir -p ~/.config/containers/systemd
+cp ~/secret-santa/deploy/secret-santa.container ~/.config/containers/systemd/
+systemctl --user daemon-reload
+systemctl --user start secret-santa
+loginctl enable-linger "$USER"   # keep it running after logout and reboot
+```
+
+Route the hostname to `http://localhost:8080`. Quadlet needs Podman 4.4 or newer.
+
 ### Using a dedicated tunnel
 
 1. Cloudflare dashboard: Networks → Tunnels → **Create a tunnel** → Cloudflared. From the
