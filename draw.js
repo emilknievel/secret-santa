@@ -7,7 +7,7 @@ import { writeFileSync } from "node:fs";
 import { randomBytes, randomInt } from "node:crypto";
 import { idFor, seal } from "./public/cipher.js";
 
-const NAMES = ["Emil", "Niklas", "Lollo", "Ulrika", "Martin", "Jennie", "Phoebe"];
+const NAMES = ["Emil", "Niklas", "Lollo", "Ulli", "Martin", "Jennie", "Phoebe"];
 
 const site = process.argv[2] ?? process.env.SITE_URL;
 if (!site) console.warn("No site URL given, so the links point at localhost. See the usage note in draw.js.\n");

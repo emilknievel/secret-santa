@@ -8,7 +8,7 @@ export default [
   {
     "id": "21jqmxnp390",
     "giver": "Niklas",
-    "gift": "2194216ce21a225acac1b7d1fb59f460"
+    "gift": "21943f6ca95b225acac1b7d1fb59f460"
   },
   {
     "id": "20gefolwurf",
@@ -17,7 +17,7 @@ export default [
   },
   {
     "id": "1z7zk0db5ns",
-    "giver": "Ulrika",
+    "giver": "Ulli",
     "gift": "f8928fc429863dfff30484499b9a11f6"
   },
   {
